@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TERRA — Luxury Real Estate</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Jost:wght@200;300;400;500&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:auto;}
+:root{
+  --sand:#F7F2EA;
+  --sand2:#EFE8DA;
+  --sand3:#E5DBС8;
+  --clay:#C4956A;
+  --clay2:#D4A878;
+  --clay3:#E8C49A;
+  --terra:#8B4A2A;
+  --terra2:#A05A35;
+  --bark:#2C1F14;
+  --bark2:#3D2B1A;
+  --bark3:#4E3822;
+  --stone:#7A6E60;
+  --stone2:#9A8E7E;
+  --border:rgba(44,31,20,.08);
+  --border2:rgba(44,31,20,.15);
+  --f1:'Cormorant',serif;
+  --f2:'Jost',sans-serif;
+  --f3:'IM Fell English',serif;
+}
+html,body{background:var(--sand);color:var(--bark);font-family:var(--f2);overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+#cur{position:fixed;width:8px;height:8px;background:var(--clay);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:multiply;transition:transform .2s,background .2s;}
+#cur-ring{position:fixed;width:40px;height:40px;border:1px solid rgba(196,149,106,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .2s ease;mix-blend-mode:multiply;}
+body.hov #cur{transform:translate(-50%,-50%) scale(2.5);background:var(--terra);}
+body.hov #cur-ring{width:64px;height:64px;border-color:rgba(139,74,42,.3);}
+
+/* GRAIN */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:8000;opacity:.7;}
+
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--terra),var(--clay));z-index:9997;width:0;}
+
+/* LOADER */
+#loader{position:fixed;inset:0;background:var(--bark);z-index:9995;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;}
+.loader-word{font-family:var(--f1);font-size:clamp(52px,8vw,120px);font-weight:300;color:var(--sand);letter-spacing:.2em;opacity:0;animation:lFade .9s ease .3s forwards;}
+.loader-tagline{font-family:var(--f2);font-size:10px;color:var(--clay);letter-spacing:.6em;text-transform:uppercase;opacity:0;animation:lFade .7s ease 1s forwards;}
+.loader-bar{width:0;height:1px;background:linear-gradient(90deg,transparent,var(--clay),transparent);animation:lBar 1.2s ease .7s forwards;}
+@keyframes lFade{to{opacity:1;}}
+@keyframes lBar{to{width:180px;}}
+#loader.out{opacity:0;pointer-events:none;transition:opacity .9s ease .3s;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:600;padding:32px 72px;display:flex;align-items:center;justify-content:space-between;transition:all .5s;}
+nav.scrolled{background:rgba(247,242,234,.95);backdrop-filter:blur(16px);padding:18px 72px;border-bottom:1px solid var(--border2);}
+.nav-logo{text-decoration:none;}
+.nav-logo-main{font-family:var(--f1);font-size:22px;font-weight:300;color:var(--bark);letter-spacing:.3em;display:block;line-height:1;}
+.nav-logo-sub{font-family:var(--f2);font-size:8px;color:var(--clay);letter-spacing:.55em;text-transform:uppercase;display:block;margin-top:3px;}
+.nav-links{display:flex;gap:40px;align-items:center;}
+.nav-a{font-family:var(--f2);font-size:10px;color:var(--stone);text-decoration:none;letter-spacing:.2em;text-transform:uppercase;font-weight:400;transition:color .25s;position:relative;}
+.nav-a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--clay);transition:width .3s;}
+.nav-a:hover{color:var(--bark);}
+.nav-a:hover::after{width:100%;}
+.nav-cta{font-family:var(--f2);font-size:9px;color:var(--sand);background:var(--bark);padding:13px 28px;text-decoration:none;letter-spacing:.18em;text-transform:uppercase;font-weight:400;transition:all .3s;border:1px solid var(--bark);}
+.nav-cta:hover{background:transparent;color:var(--bark);}
+
+/* HERO */
+#hero{height:100vh;display:grid;grid-template-columns:1fr 1fr;position:relative;overflow:hidden;}
+.hero-left{display:flex;flex-direction:column;justify-content:flex-end;padding:0 72px 100px;position:relative;z-index:2;background:var(--sand);}
+.hero-left-top{position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,var(--sand2) 0%,var(--sand) 100%);}
+.hero-overline{font-family:var(--f2);font-size:9px;color:var(--clay);letter-spacing:.5em;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:14px;position:relative;z-index:1;}
+.hero-overline::before{content:'';width:28px;height:1px;background:var(--clay);}
+.hero-h1{font-family:var(--f1);font-size:clamp(60px,7vw,120px);font-weight:300;line-height:.88;letter-spacing:-.01em;position:relative;z-index:1;}
+.hero-h1 em{font-style:italic;color:var(--terra);}
+.hero-h1-line{overflow:hidden;display:block;}
+.hero-h1-word{display:block;transform:translateY(105%);animation:wordUp 1s cubic-bezier(.16,1,.3,1) forwards;}
+.hero-h1-line:nth-child(1) .hero-h1-word{animation-delay:2.2s;}
+.hero-h1-line:nth-child(2) .hero-h1-word{animation-delay:2.35s;}
+.hero-h1-line:nth-child(3) .hero-h1-word{animation-delay:2.5s;}
+@keyframes wordUp{to{transform:translateY(0);}}
+.hero-sub{font-size:14px;color:var(--stone);line-height:1.9;max-width:340px;margin-top:32px;font-weight:300;opacity:0;animation:fadeIn .8s ease 2.8s forwards;}
+.hero-ctas{display:flex;gap:12px;margin-top:40px;opacity:0;animation:fadeIn .8s ease 3s forwards;}
+.btn-terra{background:var(--terra);color:var(--sand);font-family:var(--f2);font-size:9px;padding:17px 36px;text-decoration:none;letter-spacing:.2em;text-transform:uppercase;display:inline-block;transition:all .3s;border:1px solid var(--terra);}
+.btn-terra:hover{background:var(--bark);border-color:var(--bark);transform:translateY(-2px);box-shadow:0 8px 32px rgba(44,31,20,.2);}
+.btn-outline-dark{background:transparent;color:var(--bark);font-family:var(--f2);font-size:9px;padding:17px 36px;text-decoration:none;letter-spacing:.2em;text-transform:uppercase;display:inline-block;border:1px solid var(--border2);transition:all .3s;}
+.btn-outline-dark:hover{border-color:var(--bark);transform:translateY(-2px);}
+.hero-scroll{position:absolute;bottom:40px;left:72px;display:flex;align-items:center;gap:12px;opacity:0;animation:fadeIn .6s ease 3.2s forwards;}
+.hero-scroll span{font-family:var(--f2);font-size:9px;color:var(--stone2);letter-spacing:.25em;text-transform:uppercase;}
+.hero-scroll-line{width:48px;height:1px;background:linear-gradient(90deg,var(--clay),transparent);}
+@keyframes fadeIn{to{opacity:1;}}
+
+.hero-right{position:relative;overflow:hidden;background:var(--bark2);}
+.hero-right-img{position:absolute;inset:0;background:
+  linear-gradient(135deg,#3D2B1A 0%,#2C1F14 40%,#1E1510 100%);
+  display:flex;align-items:center;justify-content:center;}
+.hero-right-pattern{position:absolute;inset:0;opacity:.04;background-image:repeating-linear-gradient(45deg,var(--clay) 0px,var(--clay) 1px,transparent 1px,transparent 40px);}
+.hero-right-text{font-family:var(--f1);font-size:clamp(80px,12vw,200px);font-weight:300;color:rgba(196,149,106,.06);letter-spacing:.1em;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;}
+.hero-tag{position:absolute;bottom:48px;left:48px;background:var(--clay);color:var(--bark);font-family:var(--f2);font-size:9px;padding:10px 18px;letter-spacing:.2em;text-transform:uppercase;}
+.hero-stats-strip{position:absolute;top:48px;right:48px;display:flex;flex-direction:column;gap:20px;align-items:flex-end;}
+.h-stat-num{font-family:var(--f1);font-size:36px;font-weight:300;color:var(--clay2);line-height:1;display:block;}
+.h-stat-label{font-family:var(--f2);font-size:8px;color:rgba(196,149,106,.5);letter-spacing:.2em;text-transform:uppercase;margin-top:2px;display:block;}
+.hero-prop-card{position:absolute;bottom:48px;right:48px;background:rgba(247,242,234,.06);border:1px solid rgba(196,149,106,.15);backdrop-filter:blur(12px);padding:20px 24px;min-width:200px;}
+.hpc-label{font-family:var(--f2);font-size:8px;color:var(--clay);letter-spacing:.25em;text-transform:uppercase;margin-bottom:6px;}
+.hpc-price{font-family:var(--f1);font-size:28px;font-weight:300;color:var(--sand);line-height:1;}
+.hpc-address{font-family:var(--f2);font-size:10px;color:rgba(247,242,234,.4);margin-top:6px;}
+
+/* MARQUEE */
+.mq-strip{overflow:hidden;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);padding:14px 0;background:var(--sand2);}
+.mq-track{display:flex;width:max-content;animation:mq 30s linear infinite;}
+.mq-item{font-family:var(--f3);font-style:italic;font-size:13px;color:rgba(44,31,20,.2);padding:0 40px;white-space:nowrap;letter-spacing:.05em;}
+.mq-dot{color:var(--clay);opacity:.4;font-size:10px;}
+@keyframes mq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* FEATURED LISTINGS */
+#listings{padding:140px 72px;background:var(--sand);}
+.sec-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:72px;}
+.sec-label{font-family:var(--f2);font-size:9px;color:var(--clay);letter-spacing:.5em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:14px;}
+.sec-label::before{content:'';width:24px;height:1px;background:var(--clay);}
+.sec-title{font-family:var(--f1);font-size:clamp(44px,5vw,80px);font-weight:300;line-height:.92;}
+.sec-title em{font-style:italic;color:var(--terra);}
+.sec-link{font-family:var(--f2);font-size:9px;color:var(--stone);letter-spacing:.2em;text-transform:uppercase;text-decoration:none;display:flex;align-items:center;gap:8px;transition:color .3s;border-bottom:1px solid var(--border2);padding-bottom:4px;}
+.sec-link:hover{color:var(--terra);}
+.listings-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;grid-template-rows:auto auto;gap:2px;}
+.listing{position:relative;overflow:hidden;background:var(--sand2);cursor:pointer;}
+.listing:nth-child(1){grid-row:1/3;}
+.listing-img{width:100%;height:100%;min-height:280px;position:relative;overflow:hidden;}
+.listing:nth-child(1) .listing-img{min-height:580px;}
+.listing-bg{position:absolute;inset:0;transition:transform .7s cubic-bezier(.22,1,.36,1);}
+.listing:hover .listing-bg{transform:scale(1.06);}
+.listing-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(44,31,20,.85) 0%,rgba(44,31,20,.1) 50%,transparent 80%);opacity:0;transition:opacity .4s;}
+.listing:hover .listing-overlay{opacity:1;}
+.listing-info{position:absolute;bottom:0;left:0;right:0;padding:28px 24px;transform:translateY(8px);transition:transform .4s;}
+.listing:hover .listing-info{transform:translateY(0);}
+.listing-status{font-family:var(--f2);font-size:8px;color:var(--clay3);letter-spacing:.25em;text-transform:uppercase;margin-bottom:6px;opacity:0;transition:opacity .3s .1s;}
+.listing:hover .listing-status{opacity:1;}
+.listing-name{font-family:var(--f1);font-size:22px;font-weight:400;color:var(--sand);}
+.listing:nth-child(1) .listing-name{font-size:clamp(24px,2.5vw,36px);}
+.listing-price{font-family:var(--f1);font-size:18px;font-weight:300;color:var(--clay2);}
+.listing-meta{font-family:var(--f2);font-size:9px;color:rgba(247,242,234,.5);letter-spacing:.1em;margin-top:4px;}
+.listing-tag{position:absolute;top:20px;left:20px;font-family:var(--f2);font-size:8px;letter-spacing:.2em;text-transform:uppercase;padding:6px 12px;}
+.listing-tag.new{background:var(--terra);color:var(--sand);}
+.listing-tag.sale{background:var(--clay);color:var(--bark);}
+
+/* STATS */
+#stats{background:var(--bark);padding:100px 72px;}
+.stats-inner{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:1px;background:rgba(255,255,255,.05);}
+.stat-cell{background:var(--bark);padding:60px 40px;text-align:center;position:relative;overflow:hidden;transition:background .3s;}
+.stat-cell::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(196,149,106,.06),transparent);opacity:0;transition:opacity .3s;}
+.stat-cell:hover{background:var(--bark2);}
+.stat-cell:hover::before{opacity:1;}
+.stat-num{font-family:var(--f1);font-size:clamp(48px,5vw,80px);font-weight:300;color:var(--clay2);line-height:1;display:block;}
+.stat-label{font-family:var(--f2);font-size:9px;color:rgba(196,149,106,.4);letter-spacing:.25em;text-transform:uppercase;margin-top:10px;display:block;}
+
+/* ABOUT */
+#about{padding:140px 72px;display:grid;grid-template-columns:1fr 1fr;gap:120px;align-items:center;background:var(--sand2);}
+.about-visual{position:relative;}
+.about-img-main{aspect-ratio:3/4;background:var(--bark2);position:relative;overflow:hidden;border:1px solid var(--border2);}
+.about-img-main-inner{position:absolute;inset:0;background:linear-gradient(160deg,#4E3822,#2C1F14);display:flex;align-items:center;justify-content:center;}
+.about-img-main-inner span{font-family:var(--f1);font-size:clamp(60px,10vw,140px);font-weight:300;color:rgba(196,149,106,.06);letter-spacing:.2em;}
+.about-float{position:absolute;bottom:-32px;right:-32px;width:200px;background:var(--clay);padding:28px 24px;}
+.about-float-num{font-family:var(--f1);font-size:48px;font-weight:300;color:var(--bark);line-height:1;display:block;}
+.about-float-label{font-family:var(--f2);font-size:9px;color:var(--bark2);letter-spacing:.2em;text-transform:uppercase;margin-top:4px;}
+.about-corner{position:absolute;top:-20px;left:-20px;width:64px;height:64px;border-left:1px solid var(--border2);border-top:1px solid var(--border2);}
+.about-label{font-family:var(--f2);font-size:9px;color:var(--clay);letter-spacing:.5em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.about-label::before{content:'';width:24px;height:1px;background:var(--clay);}
+.about-title{font-family:var(--f1);font-size:clamp(40px,4.5vw,72px);font-weight:300;line-height:.95;margin-bottom:32px;}
+.about-title em{font-style:italic;color:var(--terra);}
+.about-body{font-size:15px;color:var(--stone);line-height:2;font-weight:300;margin-bottom:16px;}
+.about-sig{font-family:var(--f3);font-style:italic;font-size:26px;color:var(--bark);margin-top:36px;padding-top:28px;border-top:1px solid var(--border2);}
+.about-sig small{display:block;font-family:var(--f2);font-style:normal;font-size:9px;color:var(--stone2);letter-spacing:.2em;text-transform:uppercase;margin-top:4px;}
+.about-values{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:36px;}
+.av-item{padding:20px;border:1px solid var(--border);}
+.av-title{font-family:var(--f1);font-size:16px;font-weight:400;margin-bottom:4px;}
+.av-desc{font-family:var(--f2);font-size:12px;color:var(--stone2);line-height:1.6;font-weight:300;}
+
+/* SERVICES */
+#services{padding:140px 72px;background:var(--sand);}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:72px;background:var(--border);}
+.svc-cell{background:var(--sand);padding:52px 40px;position:relative;overflow:hidden;transition:background .35s;}
+.svc-cell::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--clay),var(--terra));transform:scaleX(0);transform-origin:left;transition:transform .4s;}
+.svc-cell:hover{background:var(--sand2);}
+.svc-cell:hover::after{transform:scaleX(1);}
+.svc-idx{font-family:var(--f2);font-size:9px;color:rgba(196,149,106,.3);letter-spacing:.3em;margin-bottom:28px;display:block;}
+.svc-icon{font-size:24px;margin-bottom:16px;}
+.svc-name{font-family:var(--f1);font-size:clamp(22px,2vw,30px);font-weight:400;margin-bottom:12px;color:var(--bark);}
+.svc-desc{font-size:13px;color:var(--stone);line-height:1.9;font-weight:300;}
+
+/* PROCESS */
+#process{padding:140px 72px;background:var(--sand2);border-top:1px solid var(--border2);border-bottom:1px solid var(--border2);}
+.process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:80px;position:relative;}
+.process-grid::before{content:'';position:absolute;top:36px;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--border2),var(--border2),transparent);}
+.proc-step{padding:80px 32px 40px;text-align:center;}
+.proc-num{width:72px;height:72px;border-radius:50%;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 28px;font-family:var(--f1);font-size:24px;font-weight:300;color:var(--clay);background:var(--sand2);position:relative;z-index:1;transition:all .35s;}
+.proc-step:hover .proc-num{background:var(--terra);border-color:var(--terra);color:var(--sand);}
+.proc-title{font-family:var(--f1);font-size:20px;font-weight:400;margin-bottom:10px;}
+.proc-desc{font-size:13px;color:var(--stone);line-height:1.9;font-weight:300;}
+
+/* TESTIMONIALS */
+#testimonials{padding:140px 72px;background:var(--bark);}
+.testi-header{text-align:center;margin-bottom:80px;}
+.testi-sec-label{font-family:var(--f2);font-size:9px;color:var(--clay);letter-spacing:.5em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:14px;}
+.testi-sec-label::before,.testi-sec-label::after{content:'';width:24px;height:1px;background:var(--clay);}
+.testi-sec-title{font-family:var(--f1);font-size:clamp(44px,5vw,80px);font-weight:300;color:var(--sand);line-height:.92;}
+.testi-sec-title em{font-style:italic;color:var(--clay2);}
+.testi-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;}
+.testi-card{background:var(--bark2);padding:48px 36px;position:relative;overflow:hidden;transition:background .3s;}
+.testi-card::before{content:'\201C';font-family:var(--f1);font-size:120px;color:rgba(196,149,106,.06);position:absolute;top:-10px;left:20px;line-height:1;}
+.testi-card:hover{background:var(--bark3);}
+.testi-stars{color:var(--clay);font-size:12px;letter-spacing:4px;margin-bottom:20px;}
+.testi-quote{font-family:var(--f3);font-style:italic;font-size:16px;color:rgba(247,242,234,.7);line-height:1.8;margin-bottom:28px;}
+.testi-divider{width:28px;height:1px;background:var(--clay);margin-bottom:20px;}
+.testi-name{font-family:var(--f1);font-size:18px;color:var(--sand);font-weight:400;}
+.testi-role{font-family:var(--f2);font-size:9px;color:var(--stone2);letter-spacing:.15em;text-transform:uppercase;margin-top:4px;}
+
+/* CONTACT / BOOKING */
+#contact{padding:140px 72px;background:var(--sand);display:grid;grid-template-columns:1fr 1fr;gap:120px;align-items:start;}
+.contact-left{}
+.contact-label{font-family:var(--f2);font-size:9px;color:var(--clay);letter-spacing:.5em;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.contact-label::before{content:'';width:24px;height:1px;background:var(--clay);}
+.contact-title{font-family:var(--f1);font-size:clamp(44px,4.5vw,72px);font-weight:300;line-height:.95;margin-bottom:32px;}
+.contact-title em{font-style:italic;color:var(--terra);}
+.contact-body{font-size:15px;color:var(--stone);line-height:2;margin-bottom:48px;font-weight:300;}
+.contact-details{display:flex;flex-direction:column;gap:20px;}
+.cd-item{display:flex;align-items:flex-start;gap:16px;}
+.cd-icon{width:40px;height:40px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;color:var(--clay);font-size:14px;flex-shrink:0;}
+.cd-label{font-family:var(--f2);font-size:8px;color:var(--clay);letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:3px;}
+.cd-val{font-size:14px;color:var(--bark);font-weight:300;}
+.contact-form{display:flex;flex-direction:column;gap:2px;}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+.cf-group{display:flex;flex-direction:column;background:var(--sand2);}
+.cf-label{font-family:var(--f2);font-size:8px;color:var(--clay);letter-spacing:.2em;text-transform:uppercase;padding:14px 18px 0;}
+.cf-input,.cf-select,.cf-textarea{background:transparent;border:none;border-bottom:1px solid transparent;color:var(--bark);font-family:var(--f1);font-size:16px;font-weight:300;padding:8px 18px 14px;outline:none;transition:border-color .25s;width:100%;-webkit-appearance:none;}
+.cf-input:focus,.cf-select:focus,.cf-textarea:focus{border-bottom-color:var(--clay);}
+.cf-input::placeholder,.cf-textarea::placeholder{color:var(--stone2);}
+.cf-select option{background:var(--sand2);}
+.cf-textarea{resize:none;height:100px;}
+.cf-full{grid-column:1/-1;}
+.btn-submit{background:var(--bark);color:var(--sand);font-family:var(--f2);font-size:9px;padding:20px;border:none;letter-spacing:.25em;text-transform:uppercase;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:12px;}
+.btn-submit::after{content:'→';transition:transform .3s;}
+.btn-submit:hover{background:var(--terra);}
+.btn-submit:hover::after{transform:translateX(6px);}
+#contactSuccess{display:none;padding:48px;background:var(--sand2);text-align:center;border:1px solid var(--border2);}
+.cs-icon{font-size:28px;margin-bottom:12px;}
+.cs-title{font-family:var(--f1);font-style:italic;font-size:28px;color:var(--terra);margin-bottom:8px;}
+.cs-body{font-size:14px;color:var(--stone);line-height:1.8;}
+
+/* FOOTER */
+footer{background:var(--bark);padding:100px 72px 48px;border-top:1px solid rgba(255,255,255,.04);}
+.footer-top{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:80px;margin-bottom:72px;padding-bottom:72px;border-bottom:1px solid rgba(255,255,255,.06);}
+.footer-brand-name{font-family:var(--f1);font-size:30px;font-weight:300;color:var(--sand);letter-spacing:.2em;display:block;margin-bottom:4px;}
+.footer-brand-sub{font-family:var(--f2);font-size:8px;color:var(--clay);letter-spacing:.5em;text-transform:uppercase;display:block;margin-bottom:20px;}
+.footer-tagline{font-size:14px;color:rgba(247,242,234,.3);line-height:1.9;max-width:240px;font-weight:300;margin-bottom:28px;}
+.footer-socials{display:flex;gap:8px;}
+.f-soc{width:38px;height:38px;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;color:rgba(247,242,234,.3);text-decoration:none;font-family:var(--f2);font-size:9px;letter-spacing:.05em;transition:all .25s;}
+.f-soc:hover{border-color:var(--clay);color:var(--clay);}
+.footer-col h4{font-family:var(--f2);font-size:8px;color:var(--clay);letter-spacing:.35em;text-transform:uppercase;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.05);}
+.footer-col a{display:block;font-size:13px;color:rgba(247,242,234,.3);text-decoration:none;margin-bottom:10px;transition:color .25s;font-family:var(--f2);font-weight:300;letter-spacing:.03em;}
+.footer-col a:hover{color:var(--sand);}
+.footer-col address{font-size:13px;color:rgba(247,242,234,.3);line-height:2;font-style:normal;font-family:var(--f2);font-weight:300;}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.footer-copy{font-family:var(--f2);font-size:9px;color:rgba(247,242,234,.2);letter-spacing:.1em;}
+.footer-legal{display:flex;gap:28px;}
+.footer-legal a{font-family:var(--f2);font-size:9px;color:rgba(247,242,234,.2);text-decoration:none;letter-spacing:.1em;transition:color .2s;}
+.footer-legal a:hover{color:var(--sand);}
+
+/* GSAP INIT */
+.gf{opacity:0;transform:translateY(36px);}
+.gfl{opacity:0;transform:translateX(-36px);}
+.gfr{opacity:0;transform:translateX(36px);}
+.gs{opacity:0;transform:scale(.95);}
+
+@media(max-width:960px){
+  nav{padding:18px 24px;}
+  .nav-links{display:none;}
+  #hero{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .hero-left{padding:120px 24px 80px;}
+  #listings{padding:80px 24px;}
+  .listings-grid{grid-template-columns:1fr;}
+  .listing:nth-child(1){grid-row:auto;}
+  #stats{padding:80px 24px;}
+  .stats-inner{grid-template-columns:1fr 1fr;}
+  #about{grid-template-columns:1fr;padding:80px 24px;gap:48px;}
+  .about-visual{display:none;}
+  #services{padding:80px 24px;}
+  .svc-grid{grid-template-columns:1fr;}
+  #process{padding:80px 24px;}
+  .process-grid{grid-template-columns:1fr 1fr;}
+  .process-grid::before{display:none;}
+  #testimonials{padding:80px 24px;}
+  .testi-grid{grid-template-columns:1fr;}
+  #contact{grid-template-columns:1fr;padding:80px 24px;gap:60px;}
+  footer{padding:60px 24px 32px;}
+  .footer-top{grid-template-columns:1fr;gap:40px;}
+  .sec-header{flex-direction:column;align-items:flex-start;gap:20px;}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div id="prog"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-word">TERRA</div>
+  <div class="loader-bar"></div>
+  <div class="loader-tagline">Luxury Real Estate</div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-main">TERRA</span>
+    <span class="nav-logo-sub">Luxury Real Estate</span>
+  </a>
+  <div class="nav-links">
+    <a href="#listings" class="nav-a">Properties</a>
+    <a href="#about" class="nav-a">About</a>
+    <a href="#services" class="nav-a">Services</a>
+    <a href="#testimonials" class="nav-a">Reviews</a>
+    <a href="#contact" class="nav-cta">Get in Touch</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-overline">Est. 2008 &nbsp;&bull;&nbsp; Beverly Hills, CA</div>
+    <h1 class="hero-h1">
+      <span class="hero-h1-line"><span class="hero-h1-word">Find Your</span></span>
+      <span class="hero-h1-line"><span class="hero-h1-word"><em>Forever</em></span></span>
+      <span class="hero-h1-line"><span class="hero-h1-word">Home.</span></span>
+    </h1>
+    <p class="hero-sub">Terra specialises in California's most coveted properties — from sun-drenched hillside estates to intimate coastal retreats. We don't just sell homes. We find where your life belongs.</p>
+    <div class="hero-ctas">
+      <a href="#listings" class="btn-terra">View Properties</a>
+      <a href="#contact" class="btn-outline-dark">Book Consultation</a>
+    </div>
+    <div class="hero-scroll">
+      <div class="hero-scroll-line"></div>
+      <span>Explore</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-right-img">
+      <div class="hero-right-pattern"></div>
+      <div class="hero-right-text">TERRA</div>
+    </div>
+    <div class="hero-stats-strip">
+      <div><span class="h-stat-num">$2.4B</span><span class="h-stat-label">In Sales</span></div>
+      <div><span class="h-stat-num">340+</span><span class="h-stat-label">Properties</span></div>
+    </div>
+    <div class="hero-prop-card">
+      <div class="hpc-label">Featured Listing</div>
+      <div class="hpc-price">$4,850,000</div>
+      <div class="hpc-address">1240 Laurel Canyon Blvd, LA</div>
+    </div>
+    <div class="hero-tag">New Listing</div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="mq-strip">
+  <div class="mq-track">
+    <span class="mq-item">Luxury Estates</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Beverly Hills</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Malibu Beachfront</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Hollywood Hills</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Private Estates</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Since 2008</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Luxury Estates</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Beverly Hills</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Malibu Beachfront</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Hollywood Hills</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Private Estates</span><span class="mq-dot">&diams;</span>
+    <span class="mq-item">Since 2008</span><span class="mq-dot">&diams;</span>
+  </div>
+</div>
+
+<!-- LISTINGS -->
+<section id="listings">
+  <div class="sec-header">
+    <div>
+      <div class="sec-label gf">Featured Properties</div>
+      <h2 class="sec-title gf">Current <em>Listings</em></h2>
+    </div>
+    <a href="#" class="sec-link gf">View all properties &rarr;</a>
+  </div>
+  <div class="listings-grid">
+    <div class="listing gs">
+      <div class="listing-img">
+        <div class="listing-bg" style="background:linear-gradient(160deg,#4E3822 0%,#2C1F14 50%,#1A1208 100%);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:'Cormorant',serif;font-size:clamp(40px,6vw,100px);font-weight:300;color:rgba(196,149,106,.07);letter-spacing:.15em;">ESTATE</span>
+        </div>
+        <div class="listing-overlay"></div>
+        <div class="listing-info">
+          <div class="listing-status">Available Now</div>
+          <div class="listing-name">Laurel Canyon Estate</div>
+          <div class="listing-price">$4,850,000</div>
+          <div class="listing-meta">5 bed &nbsp;&bull;&nbsp; 6 bath &nbsp;&bull;&nbsp; 6,200 sq ft</div>
+        </div>
+        <div class="listing-tag new">New</div>
+      </div>
+    </div>
+    <div class="listing gf">
+      <div class="listing-img">
+        <div class="listing-bg" style="background:linear-gradient(160deg,#3D2B1A 0%,#241A0F 100%);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:'Cormorant',serif;font-size:clamp(28px,4vw,60px);font-weight:300;color:rgba(196,149,106,.06);letter-spacing:.15em;">VILLA</span>
+        </div>
+        <div class="listing-overlay"></div>
+        <div class="listing-info">
+          <div class="listing-status">Price Reduced</div>
+          <div class="listing-name">Malibu Villa</div>
+          <div class="listing-price">$7,200,000</div>
+          <div class="listing-meta">4 bed &nbsp;&bull;&nbsp; 5 bath &nbsp;&bull;&nbsp; 4,800 sq ft</div>
+        </div>
+        <div class="listing-tag sale">Reduced</div>
+      </div>
+    </div>
+    <div class="listing gf">
+      <div class="listing-img">
+        <div class="listing-bg" style="background:linear-gradient(160deg,#4A3418 0%,#2A1D10 100%);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:'Cormorant',serif;font-size:clamp(28px,4vw,60px);font-weight:300;color:rgba(196,149,106,.06);letter-spacing:.15em;">HILLS</span>
+        </div>
+        <div class="listing-overlay"></div>
+        <div class="listing-info">
+          <div class="listing-status">Available Now</div>
+          <div class="listing-name">BH Modern</div>
+          <div class="listing-price">$3,100,000</div>
+          <div class="listing-meta">4 bed &nbsp;&bull;&nbsp; 4 bath &nbsp;&bull;&nbsp; 3,900 sq ft</div>
+        </div>
+      </div>
+    </div>
+    <div class="listing gf">
+      <div class="listing-img">
+        <div class="listing-bg" style="background:linear-gradient(160deg,#3A2812 0%,#22180B 100%);position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:'Cormorant',serif;font-size:clamp(28px,4vw,60px);font-weight:300;color:rgba(196,149,106,.06);letter-spacing:.15em;">RANCH</span>
+        </div>
+        <div class="listing-overlay"></div>
+        <div class="listing-info">
+          <div class="listing-status">Off Market</div>
+          <div class="listing-name">Hidden Valley Ranch</div>
+          <div class="listing-price">$9,500,000</div>
+          <div class="listing-meta">7 bed &nbsp;&bull;&nbsp; 8 bath &nbsp;&bull;&nbsp; 12,000 sq ft</div>
+        </div>
+        <div class="listing-tag new">Exclusive</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-inner">
+    <div class="stat-cell gf"><span class="stat-num" data-target="340" data-sfx="+">0</span><span class="stat-label">Properties Sold</span></div>
+    <div class="stat-cell gf"><span class="stat-num" data-target="16">0</span><span class="stat-label">Years Experience</span></div>
+    <div class="stat-cell gf"><span class="stat-num" data-sfx="B+" data-target="2" data-decimal="1">0</span><span class="stat-label">Billion in Sales</span></div>
+    <div class="stat-cell gf"><span class="stat-num" data-target="98" data-sfx="%">0</span><span class="stat-label">Client Satisfaction</span></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-visual gfl">
+    <div class="about-corner"></div>
+    <div class="about-img-main">
+      <div class="about-img-main-inner"><span>T</span></div>
+    </div>
+    <div class="about-float">
+      <span class="about-float-num" data-target="16">0</span>
+      <span class="about-float-label">Years of Expertise</span>
+    </div>
+  </div>
+  <div>
+    <div class="about-label gf">Our Story</div>
+    <h2 class="about-title gf">More than<br>property.<br><em>Legacy.</em></h2>
+    <p class="about-body gf">Terra was founded on a simple belief — that buying or selling a home should feel as significant as it truly is. We are not a transaction company. We are a trust company.</p>
+    <p class="about-body gf">Every client receives the full attention of our senior team. We study neighbourhoods like scholars, negotiate like advocates, and celebrate your milestones like family.</p>
+    <div class="about-sig gf">Victoria Ashton<small>Founder &amp; Principal Agent</small></div>
+    <div class="about-values gf">
+      <div class="av-item"><div class="av-title">Discretion</div><div class="av-desc">Your transaction, your privacy. Always.</div></div>
+      <div class="av-item"><div class="av-title">Precision</div><div class="av-desc">Data-driven pricing, never guesswork.</div></div>
+      <div class="av-item"><div class="av-title">Access</div><div class="av-desc">Off-market listings unavailable elsewhere.</div></div>
+      <div class="av-item"><div class="av-title">Results</div><div class="av-desc">Average 98.7% of asking price achieved.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="sec-header">
+    <div>
+      <div class="sec-label gf">What We Do</div>
+      <h2 class="sec-title gf">Our <em>Services</em></h2>
+    </div>
+  </div>
+  <div class="svc-grid">
+    <div class="svc-cell gf"><span class="svc-idx">01</span><div class="svc-icon">&#8962;</div><div class="svc-name">Buyer Representation</div><p class="svc-desc">From initial search to final close, we advocate exclusively for your interests. Access to on-market and off-market inventory across Southern California.</p></div>
+    <div class="svc-cell gf"><span class="svc-idx">02</span><div class="svc-icon">&#9733;</div><div class="svc-name">Seller Representation</div><p class="svc-desc">Bespoke marketing, professional staging, and strategic pricing to achieve maximum value. Average sale in 18 days at 98.7% of asking.</p></div>
+    <div class="svc-cell gf"><span class="svc-idx">03</span><div class="svc-icon">&#9670;</div><div class="svc-name">Off-Market Access</div><p class="svc-desc">Our exclusive network provides access to properties never listed publicly. Ideal for buyers seeking absolute privacy or unique opportunities.</p></div>
+    <div class="svc-cell gf"><span class="svc-idx">04</span><div class="svc-icon">&#9776;</div><div class="svc-name">Investment Advisory</div><p class="svc-desc">Portfolio strategy, ROI analysis, and market forecasting for individual and institutional real estate investors.</p></div>
+    <div class="svc-cell gf"><span class="svc-idx">05</span><div class="svc-icon">&#10022;</div><div class="svc-name">Relocation Services</div><p class="svc-desc">Full concierge relocation support — from neighbourhood selection to school consultation, utilities and beyond.</p></div>
+    <div class="svc-cell gf"><span class="svc-idx">06</span><div class="svc-icon">&#9998;</div><div class="svc-name">Property Management</div><p class="svc-desc">End-to-end management of luxury rental properties. Tenant screening, maintenance coordination, and monthly reporting.</p></div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="sec-header" style="justify-content:center;text-align:center;flex-direction:column;align-items:center;margin-bottom:0;">
+    <div class="sec-label gf" style="justify-content:center;">How It Works</div>
+    <h2 class="sec-title gf">The <em>Process</em></h2>
+  </div>
+  <div class="process-grid">
+    <div class="proc-step gf"><div class="proc-num">I</div><h3 class="proc-title">Consultation</h3><p class="proc-desc">A private meeting to understand your goals, timeline, and vision — no obligation required.</p></div>
+    <div class="proc-step gf"><div class="proc-num">II</div><h3 class="proc-title">Curation</h3><p class="proc-desc">We handpick properties that genuinely match your criteria — no time wasted on poor fits.</p></div>
+    <div class="proc-step gf"><div class="proc-num">III</div><h3 class="proc-title">Negotiation</h3><p class="proc-desc">We negotiate with precision and calm — protecting your interests at every stage.</p></div>
+    <div class="proc-step gf"><div class="proc-num">IV</div><h3 class="proc-title">Close & Beyond</h3><p class="proc-desc">Seamless closing and ongoing support. Our relationship doesn't end at the door.</p></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="testi-header">
+    <div class="testi-sec-label gf">Client Stories</div>
+    <h2 class="testi-sec-title gf">Words from our <em>Clients</em></h2>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card gf">
+      <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="testi-quote">"Victoria found us a property we didn't know we were looking for. She understood our lifestyle before we did. The whole experience felt effortless."</p>
+      <div class="testi-divider"></div>
+      <div class="testi-name">The Harrington Family</div>
+      <div class="testi-role">Laurel Canyon &mdash; $4.2M Purchase</div>
+    </div>
+    <div class="testi-card gf">
+      <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="testi-quote">"We had an off-market buyer within 72 hours at full ask. Terra's network is genuinely unmatched. I won't work with anyone else for our portfolio."</p>
+      <div class="testi-divider"></div>
+      <div class="testi-name">Marcus &amp; Elena Voss</div>
+      <div class="testi-role">Beverly Hills &mdash; $6.8M Sale</div>
+    </div>
+    <div class="testi-card gf">
+      <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="testi-quote">"Relocating from New York felt overwhelming. Terra handled everything — they made California feel like home before I even arrived."</p>
+      <div class="testi-divider"></div>
+      <div class="testi-name">Dr. Sophia Crane</div>
+      <div class="testi-role">Malibu &mdash; Relocation Client</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-left">
+    <div class="contact-label gf">Get in Touch</div>
+    <h2 class="contact-title gf">Let's Find<br>Your <em>Home.</em></h2>
+    <p class="contact-body gf">Whether you're buying, selling, or simply exploring — our team is ready to listen. Book a private consultation at your convenience.</p>
+    <div class="contact-details gf">
+      <div class="cd-item"><div class="cd-icon">&#9742;</div><div><span class="cd-label">Phone</span><span class="cd-val">(310) 555-0248</span></div></div>
+      <div class="cd-item"><div class="cd-icon">&#9993;</div><div><span class="cd-label">Email</span><span class="cd-val">hello@terrarealty.com</span></div></div>
+      <div class="cd-item"><div class="cd-icon">&#8982;</div><div><span class="cd-label">Office</span><span class="cd-val">421 N. Rodeo Drive, Beverly Hills</span></div></div>
+    </div>
+  </div>
+  <div>
+    <form class="contact-form gf" id="contactForm" onsubmit="handleContact(event)">
+      <div class="cf-row">
+        <div class="cf-group"><span class="cf-label">First Name</span><input class="cf-input" type="text" placeholder="First name" required></div>
+        <div class="cf-group"><span class="cf-label">Last Name</span><input class="cf-input" type="text" placeholder="Last name" required></div>
+      </div>
+      <div class="cf-row">
+        <div class="cf-group"><span class="cf-label">Email</span><input class="cf-input" type="email" placeholder="your@email.com" required></div>
+        <div class="cf-group"><span class="cf-label">Phone</span><input class="cf-input" type="tel" placeholder="(310)"></div>
+      </div>
+      <div class="cf-row">
+        <div class="cf-group cf-full"><span class="cf-label">I am looking to</span>
+          <select class="cf-select">
+            <option>Buy a property</option>
+            <option>Sell a property</option>
+            <option>Both buy and sell</option>
+            <option>Investment advice</option>
+            <option>Relocation services</option>
+          </select>
+        </div>
+      </div>
+      <div class="cf-row">
+        <div class="cf-group cf-full"><span class="cf-label">Budget Range</span>
+          <select class="cf-select">
+            <option>$1M – $2M</option>
+            <option>$2M – $5M</option>
+            <option>$5M – $10M</option>
+            <option>$10M+</option>
+          </select>
+        </div>
+      </div>
+      <div class="cf-row">
+        <div class="cf-group cf-full"><span class="cf-label">Message</span><textarea class="cf-textarea" placeholder="Tell us about your ideal property or situation..."></textarea></div>
+      </div>
+      <button type="submit" class="btn-submit">Send Enquiry</button>
+    </form>
+    <div id="contactSuccess">
+      <div class="cs-icon">&#10022;</div>
+      <div class="cs-title">Message Received</div>
+      <div class="cs-body">A member of the Terra team will be in touch within 24 hours. We look forward to finding your perfect home.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <span class="footer-brand-name">TERRA</span>
+      <span class="footer-brand-sub">Luxury Real Estate</span>
+      <p class="footer-tagline">California's most trusted name in luxury residential real estate since 2008.</p>
+      <div class="footer-socials">
+        <a href="#" class="f-soc">IG</a>
+        <a href="#" class="f-soc">FB</a>
+        <a href="#" class="f-soc">LI</a>
+        <a href="#" class="f-soc">YT</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Properties</h4>
+      <a href="#">Beverly Hills</a>
+      <a href="#">Malibu</a>
+      <a href="#">Hollywood Hills</a>
+      <a href="#">Bel Air</a>
+      <a href="#">Off Market</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="#">About Terra</a>
+      <a href="#">Our Team</a>
+      <a href="#">Testimonials</a>
+      <a href="#">Press</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <address>421 N. Rodeo Drive<br>Beverly Hills, CA 90210<br><br>Mon &ndash; Sat: 9am &ndash; 7pm<br>Sunday: By appointment</address>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">&copy; 2025 Terra Luxury Real Estate. All rights reserved. DRE #01234567</div>
+    <div class="footer-legal">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Fair Housing</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// LOADER
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('out');
+    setTimeout(()=>document.getElementById('loader').remove(),1200);
+  },2000);
+});
+
+// CURSOR
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+window.addEventListener('mousemove',e=>{
+  gsap.to(cur,{x:e.clientX,y:e.clientY,duration:.1});
+  gsap.to(ring,{x:e.clientX,y:e.clientY,duration:.2});
+});
+document.querySelectorAll('a,button,input,select,textarea,.listing,.svc-cell,.testi-card,.proc-step').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+
+// PROGRESS + NAV
+window.addEventListener('scroll',()=>{
+  document.getElementById('prog').style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>80);
+});
+
+// GSAP REVEALS
+gsap.utils.toArray('.gf').forEach(el=>{
+  gsap.to(el,{opacity:1,y:0,duration:1,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 90%'}});
+});
+gsap.utils.toArray('.gfl').forEach(el=>{
+  gsap.to(el,{opacity:1,x:0,duration:1.1,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 85%'}});
+});
+gsap.utils.toArray('.gfr').forEach(el=>{
+  gsap.to(el,{opacity:1,x:0,duration:1.1,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 85%'}});
+});
+gsap.utils.toArray('.gs').forEach(el=>{
+  gsap.to(el,{opacity:1,scale:1,duration:1.1,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 88%'}});
+});
+
+// LISTING STAGGER
+gsap.utils.toArray('.listing').forEach((el,i)=>{
+  gsap.from(el,{opacity:0,y:30,duration:.8,delay:i*.1,ease:'power2.out',
+    scrollTrigger:{trigger:'#listings .listings-grid',start:'top 85%'}});
+});
+
+// HERO PARALLAX
+gsap.to('.hero-h1',{y:-40,ease:'none',
+  scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:1.5}});
+gsap.to('.hero-right',{y:-30,ease:'none',
+  scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:2}});
+
+// STATS COUNTER
+let counted=false;
+ScrollTrigger.create({trigger:'#stats',start:'top 85%',onEnter:()=>{
+  if(counted)return; counted=true;
+  document.querySelectorAll('[data-target]').forEach(el=>{
+    const t=parseFloat(el.getAttribute('data-target'));
+    const sfx=el.getAttribute('data-sfx')||'';
+    const dec=el.getAttribute('data-decimal')?1:0;
+    gsap.to({v:0},{v:t,duration:2.2,ease:'power2.out',
+      onUpdate:function(){
+        const v=this.targets()[0].v;
+        el.textContent=(t>=100?Math.floor(v):v.toFixed(dec))+sfx;
+      }});
+  });
+}});
+
+// ABOUT FLOAT COUNTER
+let counted2=false;
+ScrollTrigger.create({trigger:'#about',start:'top 80%',onEnter:()=>{
+  if(counted2)return; counted2=true;
+  document.querySelectorAll('.about-float-num[data-target]').forEach(el=>{
+    const t=parseInt(el.getAttribute('data-target'));
+    gsap.to({v:0},{v:t,duration:2,ease:'power2.out',
+      onUpdate:function(){el.textContent=Math.floor(this.targets()[0].v);}});
+  });
+}});
+
+// MAGNETIC BTNS
+document.querySelectorAll('.btn-terra,.btn-submit,.nav-cta').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const x=(e.clientX-r.left-r.width/2)*.2;
+    const y=(e.clientY-r.top-r.height/2)*.2;
+    gsap.to(btn,{x,y,duration:.3,ease:'power2.out'});
+  });
+  btn.addEventListener('mouseleave',()=>gsap.to(btn,{x:0,y:0,duration:.6,ease:'elastic.out(1,.4)'}));
+});
+
+// LISTING 3D TILT
+document.querySelectorAll('.listing').forEach(el=>{
+  el.addEventListener('mousemove',e=>{
+    const r=el.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    gsap.to(el,{rotateY:x*5,rotateX:-y*5,transformPerspective:800,scale:1.01,duration:.4});
+  });
+  el.addEventListener('mouseleave',()=>gsap.to(el,{rotateY:0,rotateX:0,scale:1,duration:.5}));
+});
+
+// CONTACT FORM
+function handleContact(e){
+  e.preventDefault();
+  gsap.to('#contactForm',{opacity:0,y:-16,duration:.35,onComplete:()=>{
+    document.getElementById('contactForm').style.display='none';
+    document.getElementById('contactSuccess').style.display='block';
+    gsap.from('#contactSuccess',{opacity:0,y:20,duration:.6});
+  }});
+}
+</script>
+</body>
+</html>
